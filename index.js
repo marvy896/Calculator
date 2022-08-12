@@ -10,7 +10,6 @@ class Calculator {
     clear() {
         this.currentOperand = ' '
         this.previousOperand = ' '
-       
         this.operation = undefined
     }
     delete() {
@@ -116,6 +115,7 @@ operationButtons.forEach(button => {
 equalsButton.addEventListener('click', button => {
     calculator.compute()
     calculator.UpdateDisplay()
+    calculator.clear()
 })
 
 allClearButton.addEventListener('click', button => {
