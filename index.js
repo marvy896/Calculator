@@ -1,12 +1,16 @@
 class Calculator {
-    constructor(previousOperandTextElement, currentOperandTextElement) {
+    constructor(previousOperandTextElement, currentOperandTextElement, displayResultElement) {
         this.previousOperandTextElement = previousOperandTextElement
         this.currentOperandTextElement = currentOperandTextElement
+        //new
+        this.displayResultElement= displayResultElement;
+        this.displayResult = [] 
         this.clear()
     }
     clear() {
         this.currentOperand = ' '
         this.previousOperand = ' '
+       
         this.operation = undefined
     }
     delete() {
@@ -47,8 +51,10 @@ class Calculator {
                 return
         }
         this.currentOperand = computation
+        this.displayResult.push(`${prev} ${this.operation} ${current} = ${computation}`) 
+            if(this.displayResult.length > 10) this.displayResult.shift();
         this.operation = undefined
-        this.previousOperand = ''
+        this.previousOperand = ''   
     }
     getDisplayNumber(number) {
         const stringNumber = number.toString()
@@ -76,7 +82,9 @@ class Calculator {
         } else {
             this.previousOperandTextElement.innerText =""
         }
+       this.displayResultElement.innerHTML = this.displayResult.join('<br>')
     }
+    
 }
 const numberButtons = document.querySelectorAll("[data-number]")
 const operationButtons = document.querySelectorAll("[data-operation]")
@@ -85,8 +93,10 @@ const equalsButton = document.querySelector("[data-equals]")
 const allClearButton = document.querySelector("[data-all-clear]")
 const previousOperandTextElement = document.querySelector("[data-previous-operand]")
 const currentOperandTextElement = document.querySelector("[data-current-operand]")
+//new change
+const dataDisplay = document.querySelector(".display-Result")
 
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement, dataDisplay)
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -102,6 +112,7 @@ operationButtons.forEach(button => {
     })
 })
 
+   
 equalsButton.addEventListener('click', button => {
     calculator.compute()
     calculator.UpdateDisplay()
