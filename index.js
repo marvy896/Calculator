@@ -49,13 +49,16 @@ class Calculator {
             default:
                 return
         }
+        computation = + computation.toLocaleString('en',
+            { maximumFractionDigits: 3,useGrouping:false})
         this.currentOperand = computation
-        this.displayResult.push(`${prev} ${this.operation} ${current} = ${computation}`) 
+        this.displayResult.push(`${prev.toLocaleString('en')} ${this.operation} 
+        ${current.toLocaleString('en')} = ${computation.toLocaleString('en')}`) 
             if(this.displayResult.length > 10) this.displayResult.shift();
         this.operation = undefined
         this.previousOperand = ''   
     }
-    getDisplayNumber(number) {
+    getDisplayNumber(number) { console.log(number)
         const stringNumber = number.toString()
         const integerDigits = parseFloat (stringNumber.split(".")[0])
         const decimalDigits = stringNumber.split(".")[1]
@@ -126,4 +129,32 @@ allClearButton.addEventListener('click', button => {
 deleteButton.addEventListener('click', button => {
     calculator.delete()
     calculator.UpdateDisplay()
+})
+
+document.addEventListener('keydown', event => {
+    if (event.key == '1' || event.key ==  '2' ||event.key ==  '3' ||event.key == '4'
+    || event.key == '5' || event.key == '6' || event.key == '7' || event.key == '8' ||
+     event.key == '9' || event.key == '0' || event.key == '.' 
+    ){
+        calculator.appendNumber(event.key) 
+        calculator.UpdateDisplay()
+    } else if (event.key == '+' || event.key == '-' || event.key == '/' ||event.key == '*' ) { 
+        calculator.chooseOperation(event.key)
+        calculator.UpdateDisplay()
+    }
+    else if (event.key =='Enter'){ 
+        calculator.compute()
+        calculator.UpdateDisplay()
+        setTimeout(() => {
+            calculator.clear()
+        }, 5);
+    }
+    else if  (event.key =='Backspace'){
+        calculator.delete()
+        calculator.UpdateDisplay()
+    }
+    else if  (event.key =='Escape'){
+        calculator.clear()
+        calculator.UpdateDisplay()
+    }
 })
