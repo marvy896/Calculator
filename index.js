@@ -1,7 +1,10 @@
 class Calculator {
-    constructor(previousOperandTextElement, currentOperandTextElement) {
+    constructor(previousOperandTextElement, currentOperandTextElement, displayResultElement) {
         this.previousOperandTextElement = previousOperandTextElement
         this.currentOperandTextElement = currentOperandTextElement
+        //new
+        this.displayResultElement= displayResultElement;
+        this.displayResult = [] 
         this.clear()
     }
     clear() {
@@ -46,11 +49,16 @@ class Calculator {
             default:
                 return
         }
+        computation = + computation.toLocaleString('en',
+            { maximumFractionDigits: 3,useGrouping:false})
         this.currentOperand = computation
+        this.displayResult.push(`${prev.toLocaleString('en')} ${this.operation} 
+        ${current.toLocaleString('en')} = ${computation.toLocaleString('en')}`) 
+            if(this.displayResult.length > 10) this.displayResult.shift();
         this.operation = undefined
-        this.previousOperand = ''
+        this.previousOperand = ''   
     }
-    getDisplayNumber(number) {
+    getDisplayNumber(number) { console.log(number)
         const stringNumber = number.toString()
         const integerDigits = parseFloat (stringNumber.split(".")[0])
         const decimalDigits = stringNumber.split(".")[1]
@@ -76,7 +84,9 @@ class Calculator {
         } else {
             this.previousOperandTextElement.innerText =""
         }
+       this.displayResultElement.innerHTML = this.displayResult.join('<br>')
     }
+    
 }
 const numberButtons = document.querySelectorAll("[data-number]")
 const operationButtons = document.querySelectorAll("[data-operation]")
@@ -85,8 +95,10 @@ const equalsButton = document.querySelector("[data-equals]")
 const allClearButton = document.querySelector("[data-all-clear]")
 const previousOperandTextElement = document.querySelector("[data-previous-operand]")
 const currentOperandTextElement = document.querySelector("[data-current-operand]")
+//new change
+const dataDisplay = document.querySelector(".display-Result")
 
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement, dataDisplay)
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -102,9 +114,11 @@ operationButtons.forEach(button => {
     })
 })
 
+   
 equalsButton.addEventListener('click', button => {
     calculator.compute()
     calculator.UpdateDisplay()
+    calculator.clear()
 })
 
 allClearButton.addEventListener('click', button => {
@@ -115,4 +129,32 @@ allClearButton.addEventListener('click', button => {
 deleteButton.addEventListener('click', button => {
     calculator.delete()
     calculator.UpdateDisplay()
+})
+
+document.addEventListener('keydown', event => {
+    if (event.key == '1' || event.key ==  '2' ||event.key ==  '3' ||event.key == '4'
+    || event.key == '5' || event.key == '6' || event.key == '7' || event.key == '8' ||
+     event.key == '9' || event.key == '0' || event.key == '.' 
+    ){
+        calculator.appendNumber(event.key) 
+        calculator.UpdateDisplay()
+    } else if (event.key == '+' || event.key == '-' || event.key == '/' ||event.key == '*' ) { 
+        calculator.chooseOperation(event.key)
+        calculator.UpdateDisplay()
+    }
+    else if (event.key =='Enter'){ 
+        calculator.compute()
+        calculator.UpdateDisplay()
+        setTimeout(() => {
+            calculator.clear()
+        }, 5);
+    }
+    else if  (event.key =='Backspace'){
+        calculator.delete()
+        calculator.UpdateDisplay()
+    }
+    else if  (event.key =='Escape'){
+        calculator.clear()
+        calculator.UpdateDisplay()
+    }
 })
